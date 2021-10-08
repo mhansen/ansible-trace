@@ -56,3 +56,17 @@ You can click on tasks to see details about them:
 1.  Open https://ui.perfetto.dev/, and drag-and-drop in the `trace.json`.
     
     You don't have to wait for the trace to finish; you can open in-progress trace files.
+
+## Other Ansible Profiling Tools
+
+### profile_tasks
+
+[`ansible.posix.profile_tasks`](https://docs.ansible.com/ansible/latest/collections/ansible/posix/profile_tasks_callback.html) displays task timing as console output, but can't visualise gaps in the timing (e.g. with `strategy: linear` when fast hosts wait for slow hosts).
+
+### ansible-playbook -vvvv
+
+[Adding extra `v`s adds more debug info](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html#cmdoption-ansible-playbook-v), `-vvvv` enables connection debugging.
+
+### Mitogen for Ansible
+
+Mitogen promises to speed up your Ansible playbooks with a persistent interpreter. They profile their runs for bandwidth an time by analysing network packet captures.
