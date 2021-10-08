@@ -1,3 +1,0 @@
-- add items (could use an instant event), could figure out when an item finishes because the next item is starting
-- visualise ssh connection time (would need more callbacks)
-- add top-level spans per-play (needs callback when a play finishes)
