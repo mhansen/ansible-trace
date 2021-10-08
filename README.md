@@ -69,4 +69,6 @@ You can click on tasks to see details about them:
 
 ### Mitogen for Ansible
 
-Mitogen promises to speed up your Ansible playbooks with a persistent interpreter. They profile their runs for bandwidth an time by analysing network packet captures.
+[Mitogen](https://mitogen.networkgenomics.com/ansible_detailed.html) promises to speed up your Ansible playbooks with a persistent interpreter. They profile their runs for bandwidth an time by analysing network packet captures.
+
+You need to install from HEAD to support latest Ansible versions, because there hasn't been a tagged release since 2019.
