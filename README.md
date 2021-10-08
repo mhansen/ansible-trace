@@ -1,6 +1,6 @@
 # ansible-trace
 
-Visualise where time spent in your Ansible playbooks: what tasks, and what hosts, so you can find where to optimise and decrease playbook latency.
+Visualise where time is spent in your Ansible playbooks: what tasks, and what hosts, so you can find where to optimise and decrease playbook latency.
 
 An Ansible [Callback Function](https://docs.ansible.com/ansible/latest/plugins/callback.html) which traces the execution time of Ansible playooks, outputting [Chrome's Trace Event Format](https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview) for visualising in the [Perfetto](https://ui.perfetto.dev/) in-browser trace UI.
 
