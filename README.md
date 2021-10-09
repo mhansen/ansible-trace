@@ -16,6 +16,11 @@ You can click on tasks to see details about them:
 
 ![Perfetto window showing details showing arguments and filename of task](ansible-trace-slice-details.png)
 
+## Interactive Example
+
+1.  Download [example-trace.json](https://raw.githubusercontent.com/mhansen/ansible-trace/main/example-trace.json).
+1.  Open https://ui.perfetto.dev/, and drag and drop in the downloaded example-trace.json.
+
 ## Usage
 
 1.  Copy `trace.py` into your Ansible's `callback_plugins` directory, or in [other positions Ansible accepts](https://docs.ansible.com/ansible/latest/plugins/callback.html#enabling-callback-plugins), e.g.:
