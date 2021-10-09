@@ -18,7 +18,7 @@ You can click on tasks to see details about them:
 
 ## Interactive Example
 
-1.  Download [example-trace.json](https://raw.githubusercontent.com/mhansen/ansible-trace/main/example-trace.json).
+1.  Download (Right-click -> Save Link As) [example-trace.json](https://raw.githubusercontent.com/mhansen/ansible-trace/main/example-trace.json).
 1.  Open https://ui.perfetto.dev/, and drag and drop in the downloaded example-trace.json.
 
 ## Usage
