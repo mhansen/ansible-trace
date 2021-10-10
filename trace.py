@@ -82,6 +82,7 @@ class CallbackModule(CallbackBase):
             self._write_event({
                 "name": "process_name",
                 "pid": pid,
+                "cat": "process",
                 "ph": "M",
                 "args": {
                     "name": host.name,
