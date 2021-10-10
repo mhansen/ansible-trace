@@ -53,6 +53,7 @@ class CallbackModule(CallbackBase):
         self._hide_task_arguments = os.getenv('TRACE_HIDE_TASK_ARGUMENTS', 'False').lower()
         self._hosts = {}
         self._next_pid = 1
+        self._first = True
 
         if not os.path.exists(self._output_dir):
             os.makedirs(self._output_dir)
@@ -61,8 +62,10 @@ class CallbackModule(CallbackBase):
         self._f.write("[\n")
 
     def _write_event(self, e):
-            json.dump(e, self._f)
-            self._f.write(",\n")
+            if not self._first:
+                self._f.write(",\n")
+            self._first = False
+            json.dump(e, self._f, sort_keys=True, indent=2) # sort for reproducibility
             self._f.flush()
 
     def v2_runner_on_start(self, host, task):
@@ -137,6 +140,7 @@ class CallbackModule(CallbackBase):
         self._end_span(result, status='skipped')
 
     def v2_playbook_on_stats(self, stats):
+        self._f.write("\n]")
         self._f.close()
 
 @dataclass
