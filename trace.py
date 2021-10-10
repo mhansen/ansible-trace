@@ -26,6 +26,7 @@ import json
 import os
 import time
 from dataclasses import dataclass
+from typing import Dict, TextIO
 
 from ansible.plugins.callback import CallbackBase
 
@@ -49,24 +50,25 @@ class CallbackModule(CallbackBase):
     def __init__(self):
         super(CallbackModule, self).__init__()
 
-        self._output_dir = os.getenv('TRACE_OUTPUT_DIR', os.path.expanduser('.'))
-        self._hide_task_arguments = os.getenv('TRACE_HIDE_TASK_ARGUMENTS', 'False').lower()
-        self._hosts = {}
-        self._next_pid = 1
-        self._first = True
+        self._output_dir: str = os.getenv('TRACE_OUTPUT_DIR', os.path.expanduser('.'))
+        self._hide_task_arguments: str = os.getenv('TRACE_HIDE_TASK_ARGUMENTS', 'False').lower()
+        self._hosts: Dict[Host] = {}
+        self._next_pid: int = 1
+        self._first: bool = True
 
         if not os.path.exists(self._output_dir):
             os.makedirs(self._output_dir)
         output_file = os.path.join(self._output_dir, 'trace.json')
-        self._f = open(output_file, 'w')
-        self._f.write("[\n")
+        self._f: TextIO = open(output_file, 'w')
 
-    def _write_event(self, e):
-            if not self._first:
-                self._f.write(",\n")
+    def _write_event(self, e: Dict):
+        if self._first:
+            self._f.write("[\n")
+        else:
+            self._f.write(",\n")
             self._first = False
-            json.dump(e, self._f, sort_keys=True, indent=2) # sort for reproducibility
-            self._f.flush()
+        json.dump(e, self._f, sort_keys=True, indent=2) # sort for reproducibility
+        self._f.flush()
 
     def v2_runner_on_start(self, host, task):
         uuid = task._uuid
@@ -110,7 +112,7 @@ class CallbackModule(CallbackBase):
         })
 
 
-    def _end_span(self, result, status):
+    def _end_span(self, result, status: str):
         task = result._task
         uuid = task._uuid
         # See "Duration Events" in:
