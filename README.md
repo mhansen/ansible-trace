@@ -62,6 +62,14 @@ You can click on tasks to see details about them:
     
     You don't have to wait for the trace to finish; you can open in-progress trace files.
 
+## Other Trace Viewers
+
+Perfetto is the most mature trace viewer, but here are some other options:
+
+-  chrome://tracing (aka [Catapult Trace Viewer](https://chromium.googlesource.com/external/github.com/catapult-project/catapult/+/refs/heads/master/tracing/docs/getting-started.md)) is the older version of Perfetto. Supports generating a standalone HTML page.
+-  [Speedscope](https://www.speedscope.app/) can open the traces, but only shows one host at a time.
+-  [Firefox Profiler](https://profiler.firefox.com/) can open the traces, showing trace spans in the "Marker Chart" tab: [example](https://share.firefox.dev/3mGRPJc).
+
 ## Other Ansible Profiling Tools
 
 ### profile_tasks
