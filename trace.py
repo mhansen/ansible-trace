@@ -66,7 +66,7 @@ class CallbackModule(CallbackBase):
             self._f.write("[\n")
         else:
             self._f.write(",\n")
-            self._first = False
+        self._first = False
         json.dump(e, self._f, sort_keys=True, indent=2) # sort for reproducibility
         self._f.flush()
 
