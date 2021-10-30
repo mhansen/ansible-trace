@@ -23,21 +23,17 @@ You can click on tasks to see details about them:
 
 ## Usage
 
-1.  Copy `trace.py` into your Ansible's `callback_plugins` directory, or in [other positions Ansible accepts](https://docs.ansible.com/ansible/latest/plugins/callback.html#enabling-callback-plugins), e.g.:
+1.  Install with Ansible-Galaxy:
 
-    ```
-    ansible-root
-    ├── ansible.cfg
-    ├── site.yml
-    └── callback_plugins
-        └── trace.py
+    ```shell
+    ansible-galaxy collection install mhansen.ansible_trace
     ```
 
-1.  Enable the `trace` callback plugin in your `ansible.cfg`:
+1.  Enable the `mhansen.ansible_trace.trace` callback plugin in your `ansible.cfg`:
 
     ```ini
     [defaults]
-    callback_enabled = trace
+    callbacks_enabled = mhansen.ansible_trace.trace
     ```
 
     Or, enable it at the top of your playbook yml:
@@ -45,7 +41,7 @@ You can click on tasks to see details about them:
     ```yml
     ansible:
       env:
-        CALLBACKS_ENABLED: trace
+        CALLBACKS_ENABLED: mhansen.ansible_trace.trace
         TRACE_OUTPUT_DIR: .
         TRACE_HIDE_TASK_ARGUMENTS: True
     ```
@@ -56,7 +52,7 @@ You can click on tasks to see details about them:
     $ ansible-playbook site.yml
     ```
 
-    This will output `trace.json` in the `TRACE_OUTPUT_DIR`, defaulting to your current working directory.
+    This will output `trace.json` in the `TRACE_OUTPUT_DIR` (by default: your current working directory).
 
 1.  Open https://ui.perfetto.dev/, and drag-and-drop in the `trace.json`.
     

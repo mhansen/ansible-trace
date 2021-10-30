@@ -1,0 +1,2 @@
+# Probably works fine with older Ansible, I just haven't tested it.
+requires_ansible: ">=2.11"
