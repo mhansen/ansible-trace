@@ -76,6 +76,13 @@ Perfetto is the most mature trace viewer, but here are some other options:
 
 [Adding extra `v`s adds more debug info](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html#cmdoption-ansible-playbook-v), `-vvvv` enables connection debugging.
 
+### Logging and Tracing Plusing in community.general
+
+[`community.general`](https://docs.ansible.com/ansible/latest/collections/community/general/index.html#callback-plugins)
+contains many callback plugins for logging task events to various outputs,
+including Azure Log Analyics, LogDNA, Logentries, Logstash, Nagios,
+OpenTelemetry, Splunk, Sumologic, and Syslog.
+
 ### Mitogen for Ansible
 
 [Mitogen](https://mitogen.networkgenomics.com/ansible_detailed.html) promises to speed up your Ansible playbooks with a persistent interpreter. They profile their runs for bandwidth an time by analysing network packet captures.
