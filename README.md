@@ -52,9 +52,9 @@ You can click on tasks to see details about them:
     $ ansible-playbook site.yml
     ```
 
-    This will output `trace.json` in the `TRACE_OUTPUT_DIR` (by default: `./trace/`).
+    This will output `trace-<timestamp>.json` in the `TRACE_OUTPUT_DIR` (by default: `./trace/`).
 
-1.  Open https://ui.perfetto.dev/, and drag-and-drop in the `trace.json`.
+1.  Open https://ui.perfetto.dev/, and drag-and-drop in the `trace-<timestamp>.json`.
     
     You don't have to wait for the trace to finish; you can open in-progress trace files.
 
