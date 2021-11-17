@@ -34,6 +34,7 @@ DOCUMENTATION = '''
       - enable in configuration
 '''
 
+import atexit
 import json
 import os
 import time
@@ -75,11 +76,12 @@ class CallbackModule(CallbackBase):
             os.makedirs(self._output_dir)
         output_file = os.path.join(self._output_dir, self._output_file)
         self._f: TextIO = open(output_file, 'w')
+        self._f.write("[\n")
+
+        atexit.register(self._end)
 
     def _write_event(self, e: Dict):
-        if self._first:
-            self._f.write("[\n")
-        else:
+        if not self._first:
             self._f.write(",\n")
         self._first = False
         json.dump(e, self._f, sort_keys=True, indent=2) # sort for reproducibility
@@ -156,7 +158,7 @@ class CallbackModule(CallbackBase):
     def v2_runner_on_skipped(self, result):
         self._end_span(result, status='skipped')
 
-    def v2_playbook_on_stats(self, stats):
+    def _end(self):
         self._f.write("\n]")
         self._f.close()
 
