@@ -20,7 +20,7 @@ DOCUMENTATION = '''
     options:
       trace_output_dir:
         name: output dir
-        default: .
+        default: ./trace
         description: Directory to write files to.
         env:
           - name: TRACE_OUTPUT_DIR
@@ -49,7 +49,7 @@ class CallbackModule(CallbackBase):
 
     This plugin makes use of the following environment variables:
         TRACE_OUTPUT_DIR (optional): Directory to write JSON files to.
-                                     Default: .
+                                     Default: ./trace
         TRACE_HIDE_TASK_ARGUMENTS (optional): Hide the arguments for a task
                                      Default: False
     """
@@ -62,7 +62,7 @@ class CallbackModule(CallbackBase):
     def __init__(self):
         super(CallbackModule, self).__init__()
 
-        self._output_dir: str = os.getenv('TRACE_OUTPUT_DIR', os.path.expanduser('.'))
+        self._output_dir: str = os.getenv('TRACE_OUTPUT_DIR', os.path.join(os.path.expanduser('.'), 'trace'))
         self._hide_task_arguments: str = os.getenv('TRACE_HIDE_TASK_ARGUMENTS', 'False').lower()
         self._hosts: Dict[Host] = {}
         self._next_pid: int = 1

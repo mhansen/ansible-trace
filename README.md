@@ -42,7 +42,7 @@ You can click on tasks to see details about them:
     ansible:
       env:
         CALLBACKS_ENABLED: mhansen.ansible_trace.trace
-        TRACE_OUTPUT_DIR: .
+        TRACE_OUTPUT_DIR: ./trace
         TRACE_HIDE_TASK_ARGUMENTS: True
     ```
 
@@ -52,7 +52,7 @@ You can click on tasks to see details about them:
     $ ansible-playbook site.yml
     ```
 
-    This will output `trace.json` in the `TRACE_OUTPUT_DIR` (by default: your current working directory).
+    This will output `trace.json` in the `TRACE_OUTPUT_DIR` (by default: `./trace/`).
 
 1.  Open https://ui.perfetto.dev/, and drag-and-drop in the `trace.json`.
     
