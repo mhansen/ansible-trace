@@ -38,6 +38,7 @@ import json
 import os
 import time
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Dict, TextIO
 
 from ansible.plugins.callback import CallbackBase
@@ -67,10 +68,12 @@ class CallbackModule(CallbackBase):
         self._hosts: Dict[Host] = {}
         self._next_pid: int = 1
         self._first: bool = True
+        self._start_date: str = datetime.now().isoformat()
+        self._output_file: str = 'trace-%s.json' % self._start_date
 
         if not os.path.exists(self._output_dir):
             os.makedirs(self._output_dir)
-        output_file = os.path.join(self._output_dir, 'trace.json')
+        output_file = os.path.join(self._output_dir, self._output_file)
         self._f: TextIO = open(output_file, 'w')
 
     def _write_event(self, e: Dict):
