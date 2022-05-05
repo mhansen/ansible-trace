@@ -117,7 +117,7 @@ class CallbackModule(CallbackBase):
             "name": name,
             "cat": "runner",
             "ph": "B",  # Begin
-            "ts": time.time_ns() / 1000,
+            "ts": time.time_ns() / 1000 if "time_ns" in time.__dict__ else time.time() * 100000,
             "pid": self._hosts[host_uuid].pid,
             "id": abs(hash(uuid)),
             "args": {
@@ -139,7 +139,7 @@ class CallbackModule(CallbackBase):
             "cat": "runner",
             "id": abs(hash(uuid)),
             "ph": "E",  # End
-            "ts": time.time_ns() / 1000,
+            "ts": time.time_ns() / 1000 if "time_ns" in time.__dict__ else time.time() * 100000,
             "pid": self._hosts[result._host._uuid].pid,
             "args": {
                 "status": status,
