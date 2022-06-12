@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible:
+          - stable-2.11
+          - stable-2.12
+          - stable-2.13
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          path: ansible_collections/mhansen/ansible-trace
+      
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: pip3 install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Install test dependencies
+        run: pip3 install pytest mypy pytest-ansible-playbook
+
+      - name: Run integration tests
+        run: pytest -v  $(ls tests/*.py)
+        working-directory: ansible_collections/mhansen/ansible-trace/tests/integration
+
