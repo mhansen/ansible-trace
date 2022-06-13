@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+  environment:
+    CALLBACKS_ENABLED: trace
+    TRACE_OUTPUT_DIR: /ansible_collections/mhansen/ansible-trace
+    TRACE_HIDE_TASK_ARGUMENTS: True
+  tasks:
+    - name: Include task with templating
+      include_tasks: "tasks/include_templating.yml"
+      vars:
+        include_message: "Foo"
+

@@ -121,6 +121,12 @@ def add_duration_event(
                 'if I have child that are not yet ended'
                 f'(id {curr_stacks[event.pid][-1]} ongoing)')
 
+        # Check E event has the same name than the B events
+        if events[event.pid][event.id]['B'].name != event.name:
+            raise ValueError(f'Event id {event.id} with name {event.name}'
+                             ' does not have the same name as event B'
+                             f'{events[event.pid][event.id]["B"].name}')
+
         events[event.pid][event.id]['E'] = event
         curr_stacks[event.pid].pop()
 
