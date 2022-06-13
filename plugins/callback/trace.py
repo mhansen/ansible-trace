@@ -9,6 +9,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
 from ansible.plugins.callback import CallbackBase
 from typing import Dict, TextIO
@@ -22,7 +24,7 @@ import atexit
 DOCUMENTATION = '''
     name: trace
     type: aggregate
-    short_description: write playbook output to Chrome's Trace Event Format file
+    short_description: Write playbook output to Chrome\'s Trace Event Format file
     description:
       - This callback writes playbook output to Chrome Trace Event Format file.
     author: Mark Hansen (@mhansen)
@@ -74,6 +76,7 @@ class CallbackModule(CallbackBase):
         self._output_file: str = 'trace-%s.json' % self._start_date
         self._current_play: str = ''
         self._play_id: int = 0
+        self._tasks: Dict[str] = {}
 
         if not os.path.exists(self._output_dir):
             os.makedirs(self._output_dir)
@@ -82,6 +85,10 @@ class CallbackModule(CallbackBase):
         self._f.write("[\n")
 
         atexit.register(self._end)
+
+     # Permits to handle interpolation in task name in linear strategy
+    def v2_playbook_on_task_start(self, task, is_conditional):
+        self._tasks[task._uuid] = task.get_name().strip()
 
     def _write_event(self, e: Dict):
         if not self._first:
@@ -99,7 +106,7 @@ class CallbackModule(CallbackBase):
 
     def v2_runner_on_start(self, host, task):
         uuid = task._uuid
-        name = task.get_name().strip()
+        name = self._tasks[uuid]
 
         args = None
         if not task.no_log and self._hide_task_arguments == 'false':

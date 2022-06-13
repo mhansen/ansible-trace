@@ -1,0 +1,5 @@
+---
+
+- name: Random task without templating
+  shell: "echo 'hello world!'"
+

@@ -1,0 +1,5 @@
+---
+
+- name: "Echo {{ include_message }}"
+  shell: "echo {{ include_message }}"
+
