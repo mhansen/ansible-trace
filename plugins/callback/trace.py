@@ -10,6 +10,15 @@
 # GNU General Public License for more details.
 
 
+from ansible.plugins.callback import CallbackBase
+from typing import Dict, TextIO
+from datetime import datetime
+from dataclasses import dataclass
+import time
+import os
+import json
+import atexit
+
 DOCUMENTATION = '''
     name: trace
     type: aggregate
@@ -34,16 +43,6 @@ DOCUMENTATION = '''
       - enable in configuration
 '''
 
-import atexit
-import json
-import os
-import time
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Dict, TextIO
-
-from ansible.plugins.callback import CallbackBase
-
 
 class CallbackModule(CallbackBase):
     """
@@ -64,8 +63,10 @@ class CallbackModule(CallbackBase):
     def __init__(self):
         super(CallbackModule, self).__init__()
 
-        self._output_dir: str = os.getenv('TRACE_OUTPUT_DIR', os.path.join(os.path.expanduser('.'), 'trace'))
-        self._hide_task_arguments: str = os.getenv('TRACE_HIDE_TASK_ARGUMENTS', 'False').lower()
+        self._output_dir: str = os.getenv(
+            'TRACE_OUTPUT_DIR', os.path.join(os.path.expanduser('.'), 'trace'))
+        self._hide_task_arguments: str = os.getenv(
+            'TRACE_HIDE_TASK_ARGUMENTS', 'False').lower()
         self._hosts: Dict[Host] = {}
         self._next_pid: int = 1
         self._first: bool = True
@@ -84,7 +85,8 @@ class CallbackModule(CallbackBase):
         if not self._first:
             self._f.write(",\n")
         self._first = False
-        json.dump(e, self._f, sort_keys=True, indent=2) # sort for reproducibility
+        # sort for reproducibility
+        json.dump(e, self._f, sort_keys=True, indent=2)
         self._f.flush()
 
     def v2_runner_on_start(self, host, task):
@@ -128,7 +130,6 @@ class CallbackModule(CallbackBase):
             },
         })
 
-
     def _end_span(self, result, status: str):
         task = result._task
         uuid = task._uuid
@@ -161,6 +162,7 @@ class CallbackModule(CallbackBase):
     def _end(self):
         self._f.write("\n]")
         self._f.close()
+
 
 @dataclass
 class Host:
