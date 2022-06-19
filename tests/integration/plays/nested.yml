@@ -1,0 +1,15 @@
+---
+
+- hosts: group_b
+  name: Third play
+  environment:
+    CALLBACKS_ENABLED: trace
+    TRACE_OUTPUT_DIR: /ansible_collections/mhansen/ansible-trace
+    TRACE_HIDE_TASK_ARGUMENTS: True
+  tasks:
+    - name: Random task
+      shell: "echo 'Hello world'"
+
+- name: Nested play
+  import_playbook: otherplays.yml
+

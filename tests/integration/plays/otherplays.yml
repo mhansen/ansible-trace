@@ -1,0 +1,12 @@
+---
+
+- hosts: group_a
+  name: Random play
+  environment:
+    CALLBACKS_ENABLED: trace
+    TRACE_OUTPUT_DIR: /ansible_collections/mhansen/ansible-trace
+    TRACE_HIDE_TASK_ARGUMENTS: True
+  tasks:
+    - name: A fake task
+      shell: "echo 'hello there'"
+
