@@ -1,0 +1,17 @@
+---
+
+- hosts: group_a
+  name: First play
+  environment:
+    CALLBACKS_ENABLED: trace
+    TRACE_OUTPUT_DIR: /ansible_collections/mhansen/ansible-trace
+    TRACE_HIDE_TASK_ARGUMENTS: True
+  tasks:
+    - name: One task before import
+      shell: "echo 'Play 1'"
+
+- name: Second play
+  import_playbook: otherplays.yml
+
+- name: Third play
+  import_playbook: nested.yml
