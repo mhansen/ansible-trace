@@ -234,6 +234,7 @@ class CallbackModule(CallbackBase):
 
     def _start_role_span(self, host, role):
         name: str = role.get_name().strip()
+
         self._write_event({
             "name": name,
             "cat": "role",
@@ -243,7 +244,7 @@ class CallbackModule(CallbackBase):
             "id": abs(hash(role._uuid)),
             "args": {
                 "role": name,
-                "path": role.get_path(),
+                "path": role._role_path,
                 "host": host.name,
             },
         })
