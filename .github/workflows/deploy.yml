@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-
+    paths:
+      - 'galaxy.yml'
 jobs:
   deploy:
     runs-on: ubuntu-latest
