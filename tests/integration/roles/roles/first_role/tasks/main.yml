@@ -1,0 +1,8 @@
+---
+
+- name: First task
+  shell: "echo 'hello world'"
+
+- name: ": Second task :"
+  ansible.builtin.ping:
+

@@ -1,0 +1,8 @@
+---
+
+- name: First task
+  shell: "echo 'hello world'"
+
+- name: Test include
+  include_role:
+    name: nested_role

@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  name: Test roles
+  environment:
+    CALLBACKS_ENABLED: trace
+    TRACE_OUTPUT_DIR: /ansible_collections/mhansen/ansible-trace
+    TRACE_HIDE_TASK_ARGUMENTS: True
+  roles:
+    - import_role_only
+

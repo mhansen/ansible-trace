@@ -2,8 +2,7 @@ import os
 import json
 import glob
 import re
-from collections import deque
-from typing import Union, Dict, List, Any, TextIO, Deque, Tuple
+from typing import Union, Dict, List, Any, TextIO, Tuple
 from event import HostEvent, DurationEvent
 
 JSONTYPE = Union[None, int, str, bool, List[Any], Dict[str, Any]]
@@ -19,20 +18,20 @@ def get_last_trace() -> JSONTYPE:
     return trace_json
 
 
-def parse_and_validate_trace(trace: JSONTYPE) -> Tuple[Dict[int, HostEvent],
-                                                       Dict[int, Any]]:
+def parse_and_validate_trace(
+    trace: JSONTYPE) -> Tuple[Dict[int, HostEvent],
+                              Dict[int, List[List[Any]]]]:
     hosts: Dict[int, HostEvent] = {}
-    duration_events: Dict[int, Any] = {}
-    duration_stacks: Dict[int, Deque] = {}
+    duration_events: Dict[int, List[List[Any]]] = {}
 
     # Parse events in trace
     for event in trace:
         if 'ph' in event and event['ph'] == 'M':
-            hosts, duration_events, duration_stacks = add_hosts(
-                hosts, duration_events, duration_stacks, event)
+            hosts, duration_events = add_hosts(
+                hosts, duration_events, event)
         elif 'ph' in event and re.search("^(B|E)$", event['ph']):
-            duration_events, duration_stacks = add_duration_event(
-                hosts, duration_events, duration_stacks, event)
+            duration_events = add_duration_event(
+                hosts, duration_events, event)
         else:
             raise ValueError('Event cannot be handled')
 
@@ -41,25 +40,22 @@ def parse_and_validate_trace(trace: JSONTYPE) -> Tuple[Dict[int, HostEvent],
 
 def add_hosts(
         hosts: Dict[int, HostEvent],
-        duration_events: Dict[int, Any],
-        duration_stacks: Dict[int, Deque],
+        duration_events: Dict[int, List[List[Any]]],
         event_hash: Any) -> Tuple[Dict[int, HostEvent],
-                                  Dict[int, Any], Dict[int, Deque]]:
+                                  Dict[int, List[List[Any]]]]:
 
     event = HostEvent(event_hash)
 
     hosts[event.pid] = event
-    duration_events[event.pid] = {}
-    duration_stacks[event.pid] = deque()
+    duration_events[event.pid] = []
 
-    return (hosts, duration_events, duration_stacks)
+    return (hosts, duration_events)
 
 
 def add_duration_event(
         hosts: Dict[int, HostEvent],
-        events: Dict[int, Any],
-        curr_stacks: Dict[int, Deque],
-        event_hash: Any) -> Tuple[Dict[int, Any], Dict[int, Deque]]:
+        event_matrix: Dict[int, List[List[Any]]],
+        event_hash: Any) -> Dict[int, List[List[Any]]]:
 
     event = DurationEvent(event_hash)
 
@@ -69,65 +65,49 @@ def add_duration_event(
             'does not match any registered host')
 
     if event.ph == 'B':
-
-        # Check if event already exists
-        if event.id in events[event.pid]:
-            raise ValueError(f'Event {event.id} already registered')
-
-        events[event.pid][event.id] = {'B': event, 'children_ids': []}
-
-        # If there is event in stack, must declare this event as child of last
-        # event in stack
-        if curr_stacks[event.pid]:
-            parent_id: int = curr_stacks[event.pid][-1]
-            if parent_id not in events[event.pid]:
-                raise ValueError(
-                    f'Event id {parent_id} in stack, '
-                    'is not present in host events')
-
-            # Check if child timestamp is inferior or equal to parent
-            if events[event.pid][parent_id]['B'].ts > event.ts:
+        # If first event of the last stack is finished, add new stack
+        if(len(event_matrix[event.pid]) == 0 or
+           'E' in event_matrix[event.pid][-1][0]):
+            event_matrix[event.pid].append([{'B': event}])
+        # Else check the last parent of the last stack
+        # and ensure child timestamp is inferior
+        else:
+            last_parent = None
+            for elem in event_matrix[event.pid][-1][::-1]:
+                if 'E' not in elem:
+                    last_parent = elem
+                    break
+            if last_parent['B'].ts > event.ts:
                 raise ValueError(f'Event id {event.id}'
                                  f'begin timestamp {event.ts}'
                                  'is inferior to its parent id'
-                                 f'{events[event.pid][parent_id]["B"].id}'
+                                 f'{last_parent["B"].id}'
                                  'with timestamp'
-                                 f'{events[event.pid][parent_id]["B"].ts}')
+                                 f'{last_parent["B"].ts}')
+            event_matrix[event.pid][-1].append({'B': event})
 
-            events[event.pid][parent_id]['children_ids'].append(event.id)
-            events[event.pid][event.id]['parent_id'] = parent_id
-
-        curr_stacks[event.pid].append(event.id)
-        return (events, curr_stacks)
-
-    if event.ph == 'E':
-
-        # Check if there is B event
-        if (event.id not in events[event.pid]
-                or 'B' not in events[event.pid][event.id]):
+    else:
+        # Get element to end
+        event_to_end = None
+        for elem in event_matrix[event.pid][-1][::-1]:
+            if elem['B'].id == event.id:
+                event_to_end = elem
+                break
+        if event_to_end is None:
             raise ValueError(f'Event {event.id} is not registered')
 
         # Check if timestamp is superior or equal to B event
-        if events[event.pid][event.id]['B'].ts > event.ts:
+        if event_to_end["B"].ts > event.ts:
             raise ValueError(f'Event id {event.id} timestamp {event.ts}'
                              'is lower than its begin event with timestamp'
-                             f'{events[event.pid][event.id]["B"].ts}')
-
-        # Check we don't have children event not yet ended
-        if(not curr_stacks[event.pid]
-                or curr_stacks[event.pid][-1] != event.id):
-            raise ValueError(
-                f'Cannot end event id {event.id}'
-                'if I have child that are not yet ended'
-                f'(id {curr_stacks[event.pid][-1]} ongoing)')
+                             f'{event_to_end["B"].ts}')
 
         # Check E event has the same name than the B events
-        if events[event.pid][event.id]['B'].name != event.name:
+        if event_to_end["B"].name != event.name:
             raise ValueError(f'Event id {event.id} with name {event.name}'
                              ' does not have the same name as event B'
-                             f'{events[event.pid][event.id]["B"].name}')
+                             f'{event_to_end["B"].name}')
 
-        events[event.pid][event.id]['E'] = event
-        curr_stacks[event.pid].pop()
+        event_to_end['E'] = event
 
-    return (events, curr_stacks)
+    return event_matrix

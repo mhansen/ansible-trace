@@ -1,0 +1,9 @@
+---
+
+- name: Import nested role2
+  import_role: 
+    name: nested_role_2
+
+- name: First task
+  shell: "echo 'hello world'"
+
