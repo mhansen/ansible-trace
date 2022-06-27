@@ -87,7 +87,7 @@ class CallbackModule(CallbackBase):
         atexit.register(self._end)
 
     def _get_time(self):
-        return time.time_ns() / 1000 if "time_ns" in time.__dict__ else time.time() * 100000
+        return time.time_ns() / 1000 if "time_ns" in time.__dict__ else time.time() * 1000000
 
     def _write_event(self, e: Dict):
         if not self._first:
