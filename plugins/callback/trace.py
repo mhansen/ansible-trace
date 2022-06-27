@@ -268,7 +268,7 @@ class CallbackModule(CallbackBase):
         now: float = self._get_time()
 
         self._write_event({
-            "name": task.name.strip(),
+            "name": self._tasks[uuid],
             "cat": "runner",
             "id": abs(hash(uuid)),
             "ph": "E",  # End
