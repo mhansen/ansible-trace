@@ -12,7 +12,7 @@ JSONTYPE = Union[None, int, str, bool, List[Any], Dict[str, Any]]
 @pytest.mark.ansible_strategy('free')
 def test_basic_multiple_free(ansible_play):
     trace_hosts: Dict[int, HostEvent]
-    trace_events: Dict[int, Any]
+    trace_events: Dict[int, List[List[Any]]]
     trace_json: JSONTYPE = get_last_trace()
     trace_hosts, trace_events = parse_and_validate_trace(trace_json)
 
@@ -22,7 +22,7 @@ def test_basic_multiple_free(ansible_play):
 @pytest.mark.ansible_strategy('linear')
 def test_basic_multiple_linear(ansible_play):
     trace_hosts: Dict[int, HostEvent]
-    trace_events: Dict[int, Any]
+    trace_events: Dict[int, List[List[Any]]]
     trace_json: JSONTYPE = get_last_trace()
     trace_hosts, trace_events = parse_and_validate_trace(trace_json)
 
@@ -32,6 +32,6 @@ def test_basic_multiple_linear(ansible_play):
 @pytest.mark.ansible_strategy('linear')
 def test_basic_single_linear(ansible_play):
     trace_hosts: Dict[int, HostEvent]
-    trace_events: Dict[int, Any]
+    trace_events: Dict[int, List[List[Any]]]
     trace_json: JSONTYPE = get_last_trace()
     trace_hosts, trace_events = parse_and_validate_trace(trace_json)

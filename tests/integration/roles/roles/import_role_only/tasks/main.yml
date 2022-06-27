@@ -1,0 +1,6 @@
+---
+
+- name: Import nested role2
+  import_role: 
+    name: nested_role_2
+

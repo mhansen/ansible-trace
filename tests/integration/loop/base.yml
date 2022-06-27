@@ -1,0 +1,38 @@
+---
+
+- hosts: all
+  name: Test loop
+  environment:
+    CALLBACKS_ENABLED: trace
+    TRACE_OUTPUT_DIR: /ansible_collections/mhansen/ansible-trace
+    TRACE_HIDE_TASK_ARGUMENTS: True
+  tasks:
+
+    - name: Loop with str
+      shell: "echo '{{ item }}'"
+      loop:
+        - "foo"
+        - "bar"
+        - "foo"
+
+    - name: Skip items
+      shell: "echo '{{ item }}'"
+      loop:
+        - "bar"
+        - "skipme"
+        - "foo"
+      when: item == 'foo'
+
+    - name: Item objects
+      shell: "echo '{{ item.name | default('bar') }}'"
+      loop:
+        - { name: "bar" }
+        - 
+        - { foo: 'bar'}
+        - { name: "foo" }
+
+    - name: Module ping
+      ansible.builtin.ping:
+      loop:
+        - '127.0.0.1'
+        - '127.0.0.2'

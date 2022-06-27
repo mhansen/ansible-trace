@@ -1,0 +1,9 @@
+---
+
+- name: First task
+  shell: "echo 'hello world'"
+
+- name: Gather facts
+  gather_facts:
+  become: yes
+
